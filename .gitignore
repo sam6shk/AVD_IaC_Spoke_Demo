@@ -1,0 +1,21 @@
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Exclude sensitive tfvars
+*.tfvars
+!terraform.tfvars.example
+
+# Exclude CLI plan files
+*.tfplan
+
+# Azure CLI / IDE local settings
+.vscode/
+.idea/
