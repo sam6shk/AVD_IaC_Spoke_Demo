@@ -1,0 +1,125 @@
+<mxfile host="app.diagrams.net" modified="2026-03-20T00:00:00.000Z" agent="Mozilla/5.0" version="21.0.0" type="device">
+  <diagram name="AVD-HLD-Architecture" id="avd-hld-diagram">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Existing Hub Landing Zone VNet -->
+        <mxCell id="group_hub" value="Existing Hub Landing Zone VNet" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxInfo x="80" y="80" width="360" height="260" />
+        </mxCell>
+        <mxCell id="HubVNet" value="Hub Virtual Network" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="group_hub">
+          <mxInfo x="40" y="50" width="280" height="60" />
+        </mxCell>
+        <mxCell id="Firewall" value="Azure Firewall / NVA&lt;br&gt;(0.0.0.0/0)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="group_hub">
+          <mxInfo x="40" y="150" width="280" height="70" />
+        </mxCell>
+
+        <!-- AVD 2nd Spoke VNet -->
+        <mxCell id="group_spoke" value="AVD 2nd Spoke VNet (10.2.0.0/16)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxInfo x="500" y="80" width="600" height="680" />
+        </mxCell>
+        <mxCell id="SpokeVNet" value="AVD Spoke VNet" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2" vertex="1" parent="group_spoke">
+          <mxInfo x="30" y="30" width="120" height="30" />
+        </mxCell>
+
+        <!-- Subnet_Hosts -->
+        <mxCell id="group_hosts" value="Session Host Subnet (snet-avd-session-hosts)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" vertex="1" parent="group_spoke">
+          <mxInfo x="30" y="70" width="540" height="240" />
+        </mxCell>
+        <mxCell id="SH01" value="AVD Session Host 01" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" vertex="1" parent="group_hosts">
+          <mxInfo x="30" y="50" width="160" height="70" />
+        </mxCell>
+        <mxCell id="SH02" value="AVD Session Host 02" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" vertex="1" parent="group_hosts">
+          <mxInfo x="220" y="50" width="160" height="70" />
+        </mxCell>
+        <mxCell id="NSG_UDR" value="NSG + UDR Route Table" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="group_hosts">
+          <mxInfo x="30" y="140" width="350" height="50" />
+        </mxCell>
+
+        <!-- Subnet_PE -->
+        <mxCell id="group_pe" value="Private Endpoint Subnet (snet-avd-private-endpoints)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" vertex="1" parent="group_spoke">
+          <mxInfo x="30" y="330" width="540" height="150" />
+        </mxCell>
+        <mxCell id="PE_FSLogix" value="FSLogix Private Endpoint" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="group_pe">
+          <mxInfo x="30" y="50" width="220" height="60" />
+        </mxCell>
+        <mxCell id="PE_AppAttach" value="App Attach Private Endpoint" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="group_pe">
+          <mxInfo x="280" y="50" width="230" height="60" />
+        </mxCell>
+
+        <!-- Image_System -->
+        <mxCell id="group_image" value="Image Lifecycle Management" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;" vertex="1" parent="group_spoke">
+          <mxInfo x="30" y="500" width="540" height="150" />
+        </mxCell>
+        <mxCell id="ACG" value="Azure Compute Gallery (SIG)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;" vertex="1" parent="group_image">
+          <mxInfo x="30" y="50" width="220" height="60" />
+        </mxCell>
+        <mxCell id="ImgDef" value="Win11 23H2 Multi-Session Image Def" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;" vertex="1" parent="group_image">
+          <mxInfo x="280" y="50" width="230" height="60" />
+        </mxCell>
+
+        <!-- Azure Storage Services -->
+        <mxCell id="group_storage" value="Azure Storage Services" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxInfo x="1150" y="80" width="400" height="300" />
+        </mxCell>
+        <mxCell id="ST_FSLogix" value="Azure Files (Premium FileStorage)&lt;br&gt;Share: profiles" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="group_storage">
+          <mxInfo x="40" y="50" width="320" height="90" />
+        </mxCell>
+        <mxCell id="ST_AppAttach" value="Azure Files (StorageV2)&lt;br&gt;Share: appattach-packages" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="group_storage">
+          <mxInfo x="40" y="170" width="320" height="90" />
+        </mxCell>
+
+        <!-- AVD Control Plane -->
+        <mxCell id="group_control" value="AVD Control Plane (Microsoft Managed)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxInfo x="1150" y="420" width="400" height="340" />
+        </mxCell>
+        <mxCell id="Workspace" value="AVD Workspace" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;" vertex="1" parent="group_control">
+          <mxInfo x="40" y="50" width="320" height="60" />
+        </mxCell>
+        <mxCell id="DAG" value="Desktop Application Group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;" vertex="1" parent="group_control">
+          <mxInfo x="40" y="140" width="320" height="60" />
+        </mxCell>
+        <mxCell id="HostPool" value="AVD Host Pool (Pooled / BreadthFirst)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;" vertex="1" parent="group_control">
+          <mxInfo x="40" y="230" width="320" height="70" />
+        </mxCell>
+
+        <!-- Connectors / Edges -->
+        <mxCell id="e1" value="VNet Peering" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="HubVNet" target="SpokeVNet">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="0.0.0.0/0 UDR" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0;exitY=0.5;entryX=1;entryY=0.75;" edge="1" parent="1" source="SH01" target="Firewall">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="SMB Profiles" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.25;exitY=1;entryX=0.25;entryY=0;" edge="1" parent="1" source="SH01" target="PE_FSLogix">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="PE_FSLogix" target="ST_FSLogix">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="MSIX Mount" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.75;exitY=1;entryX=0.25;entryY=0;" edge="1" parent="1" source="SH01" target="PE_AppAttach">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="PE_AppAttach" target="ST_AppAttach">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="Reference" style="edgeStyle=dashedEdge;rounded=0;html=1;exitX=0;exitY=0;entryX=1;entryY=1;" edge="1" parent="1" source="ImgDef" target="SH01">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="HostPool" target="SH01">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0;exitY=0.2;entryX=1;entryY=0.8;" edge="1" parent="1" source="HostPool" target="SH02">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="Workspace" target="DAG">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="DAG" target="HostPool">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AVD 2nd Spoke Landing Zone - Architecture Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0B0F19;
+      --bg-card: #111827;
+      --bg-card-hover: #1F2937;
+      --accent-blue: #38BDF8;
+      --accent-purple: #A855F7;
+      --accent-emerald: #34D399;
+      --accent-amber: #FBBF24;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --border-color: #1E293B;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* Presentation Container */
+    .deck-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .slide {
+      display: none;
+      width: 100%;
+      height: calc(100vh - 70px);
+      padding: 3rem 5rem;
+      overflow-y: auto;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .slide.active {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Slide Typography */
+    .slide-header {
+      margin-bottom: 2rem;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .slide-title {
+      font-size: 2.25rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .slide-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .category-tag {
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--accent-blue);
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.75rem;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(56, 189, 248, 0.4);
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-list {
+      list-style: none;
+    }
+
+    .card-list li {
+      margin-bottom: 0.65rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      font-size: 0.95rem;
+      position: relative;
+      padding-left: 1.25rem;
+    }
+
+    .card-list li::before {
+      content: "▹";
+      position: absolute;
+      left: 0;
+      color: var(--accent-blue);
+    }
+
+    /* Code Block */
+    pre {
+      background: #090D16;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: var(--accent-emerald);
+      overflow-x: auto;
+    }
+
+    /* Title Slide Specific */
+    .title-slide {
+      justify-content: center !important;
+      align-items: center !important;
+      text-align: center;
+    }
+
+    .title-badge {
+      background: linear-gradient(135deg, rgba(56,189,248,0.2), rgba(168,85,247,0.2));
+      border: 1px solid var(--accent-blue);
+      color: var(--accent-blue);
+      padding: 0.5rem 1.25rem;
+      border-radius: 9999px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      display: inline-block;
+    }
+
+    .title-main {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #FFFFFF, var(--accent-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .title-desc {
+      font-size: 1.35rem;
+      color: var(--text-muted);
+      max-width: 800px;
+      margin-bottom: 2.5rem;
+    }
+
+    .repo-link {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-family: 'Fira Code', monospace;
+      color: var(--accent-emerald);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .repo-link:hover {
+      border-color: var(--accent-emerald);
+      box-shadow: 0 0 15px rgba(52, 211, 153, 0.2);
+    }
+
+    /* Controls & Footer */
+    .controls-bar {
+      height: 70px;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 3rem;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background: var(--accent-blue);
+      color: #000000;
+      border-color: var(--accent-blue);
+    }
+
+    .btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .progress-container {
+      flex: 1;
+      max-width: 300px;
+      margin: 0 2rem;
+      height: 6px;
+      background: var(--border-color);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+      width: 10%;
+      transition: width 0.3s ease;
+    }
+
+    .slide-counter {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* Diagram visual mock */
+    .diagram-box {
+      background: #090D16;
+      border: 1px dashed var(--accent-blue);
+      border-radius: 8px;
+      padding: 1.5rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: #E2E8F0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="deck-container">
+    
+    <!-- SLIDE 1: Title -->
+    <div class="slide slide-1 title-slide active">
+      <div class="title-badge">Azure Virtual Desktop (AVD) IaC Demo</div>
+      <h1 class="title-main">AVD 2nd Spoke Landing Zone</h1>
+      <p class="title-desc">End-to-End Enterprise Architecture, FSLogix Profiles, MSIX App Attach & Azure Compute Gallery Automation</p>
+      <a href="https://github.com/sam6shk/AVD_IaC_Spoke_Demo.git" target="_blank" class="repo-link">
+        git clone https://github.com/sam6shk/AVD_IaC_Spoke_Demo.git
+      </a>
+    </div>
+
+    <!-- SLIDE 2: Business & Context -->
+    <div class="slide slide-2">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">Requirement & Scope</h2>
+          <p class="slide-subtitle">Why a dedicated AVD 2nd Spoke Virtual Network?</p>
+        </div>
+        <span class="category-tag">Architecture Context</span>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">🎯 Business Expectations</div>
+          <ul class="card-list">
+            <li><strong>Second Spoke VNet</strong>: Connects seamlessly to existing Hub Landing Zone serving other workloads.</li>
+            <li><strong>100% Terraform IaC</strong>: Zero manual portal clickops for repeatability & compliance.</li>
+            <li><strong>Simplified Host Pool Image System</strong>: Automated golden image versioning without host pool rebuilds.</li>
+            <li><strong>FSLogix Profile Containers</strong>: High performance profile storage on Azure Files.</li>
+            <li><strong>MSIX App Attach</strong>: Dynamic application delivery decoupled from core OS image.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">💡 Key Architectural Solutions</div>
+          <ul class="card-list">
+            <li><strong>Bi-directional VNet Peering</strong> with Hub VNet (`10.2.0.0/16` Spoke CIDR).</li>
+            <li><strong>Forced Tunneling UDR</strong> (`0.0.0.0/0`) routing all egress traffic through Hub Firewall/NVA.</li>
+            <li><strong>Azure Compute Gallery (SIG)</strong> for structured versioning (`v1.0.1` $\rightarrow$ `v1.0.2`).</li>
+            <li><strong>Private Endpoints</strong> (`privatelink.file.core.windows.net`) for FSLogix & App Attach shares.</li>
+            <li><strong>Entra ID Join (`AADLoginForWindows`)</strong> extension on all session host VMs.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: HLD Architecture -->
+    <div class="slide slide-3">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">High-Level Architecture (HLD)</h2>
+          <p class="slide-subtitle">Hub-and-Spoke Topology & Network Flow</p>
+        </div>
+        <span class="category-tag">Topology</span>
+      </div>
+      <div class="diagram-box">
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                              EXISTING HUB LANDING ZONE                                 │
+│    ┌───────────────────────────┐           ┌───────────────────────────────────────┐   │
+│    │    Hub Virtual Network    │<=========>│   Azure Firewall / NVA (0.0.0.0/0)   │   │
+│    └───────────────────────────┘           └───────────────────────────────────────┘   │
+└─────────────────────────────────────────║──────────────────────────────────────────────┘
+                                          ║ Bi-Directional VNet Peering & Force Tunnel UDR
+┌─────────────────────────────────────────║──────────────────────────────────────────────┐
+│                              AVD 2ND SPOKE LANDING ZONE                                │
+│                                                                                        │
+│   ┌─────────────────────────────────────┐     ┌────────────────────────────────────┐   │
+│   │ Session Hosts Subnet (10.2.1.0/24)  │     │ Private Endpoints (10.2.2.0/24)    │   │
+│   │ - AVD Session Host 01 / 02          │     │ - FSLogix Storage PE               │   │
+│   │ - NSG + Force Tunneling UDR         │     │ - App Attach Storage PE            │   │
+│   └─────────────────────────────────────┘     └────────────────────────────────────┘   │
+│                                                                                        │
+│   ┌─────────────────────────────────────┐     ┌────────────────────────────────────┐   │
+│   │ Image Management                    │     │ AVD Control Plane                  │   │
+│   │ - Azure Compute Gallery (SIG)       │     │ - Workspace / Host Pool / DAG      │   │
+│   └─────────────────────────────────────┘     └────────────────────────────────────┘   │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+      </div>
+    </div>
+
+    <!-- SLIDE 4: Simplified Image Management -->
+    <div class="slide slide-4">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">Simplified Host Pool Image Update</h2>
+          <p class="slide-subtitle">Azure Compute Gallery (SIG) Rolling Updates</p>
+        </div>
+        <span class="category-tag">Image Lifecycle</span>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title">1. Build & Version</div>
+          <ul class="card-list">
+            <li>Golden Image stored in <strong>Azure Compute Gallery</strong> (`compute_gallery.tf`).</li>
+            <li>Win11 Enterprise Multi-Session 23H2 + M365 Apps base definition.</li>
+            <li>Supports versioning (`1.0.1`, `1.0.2`, etc.).</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">2. Update Terraform</div>
+          <ul class="card-list">
+            <li>Set `use_custom_gallery_image = true`.</li>
+            <li>Pass `custom_image_version_id` in `terraform.tfvars`.</li>
+            <li>No need to destroy Host Pool workspace control plane.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">3. Zero-Downtime Rollout</div>
+          <ul class="card-list">
+            <li>Enable <strong>Drain Mode</strong> on existing hosts.</li>
+            <li>Terraform provisions new host VMs from the new image version.</li>
+            <li>Gracefully delete old hosts after users log off.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: FSLogix Profile Storage -->
+    <div class="slide slide-5">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">Profile Management with FSLogix</h2>
+          <p class="slide-subtitle">Premium Azure Files & Automated Provisioning</p>
+        </div>
+        <span class="category-tag">Storage & Profiles</span>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">🔑 Storage Architecture</div>
+          <ul class="card-list">
+            <li><strong>Premium FileStorage Account</strong> (`stfslogix...`) with ZRS replication.</li>
+            <li>File Share `profiles` with configurable quota (`var.fslogix_share_quota_gb`).</li>
+            <li><strong>Private Endpoint</strong> in `snet-avd-private-endpoints` (`privatelink.file.core.windows.net`).</li>
+            <li><strong>Public Access Disabled</strong> (`public_network_access_enabled = false`).</li>
+            <li>Supports <strong>Entra ID Kerberos (`AADKERB`)</strong> SMB authentication.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">⚙️ Automated Host Script Inject</div>
+<pre># Registry Config injected via CustomScriptExtension
+New-Item -Path 'HKLM:\SOFTWARE\FSLogix\Profiles' -Force
+New-ItemProperty -Name 'Enabled' -Value 1 -PropertyType DWORD
+New-ItemProperty -Name 'VHDLocations' `
+  -Value '\\stfslogix....file.core.windows.net\profiles' `
+  -PropertyType MultiString
+New-ItemProperty -Name 'FlipFlopProfileDirectoryName' -Value 1
+New-ItemProperty -Name 'SizeInMB' -Value 30000</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: MSIX App Attach -->
+    <div class="slide slide-6">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">Dynamic App Delivery (MSIX App Attach)</h2>
+          <p class="slide-subtitle">Decoupling Applications from the OS Image</p>
+        </div>
+        <span class="category-tag">App Attach</span>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">📦 Package Storage Setup</div>
+          <ul class="card-list">
+            <li>Dedicated Storage Account (`stappattach...`) & SMB Share `appattach-packages`.</li>
+            <li>Secured via dedicated Private Endpoint in Spoke VNet.</li>
+            <li>Stores `.vhdx` / `.cim` application container packages.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">🚀 Key Benefits</div>
+          <ul class="card-list">
+            <li><strong>70% Faster OS Patching</strong>: Base image stays clean and lightweight.</li>
+            <li><strong>Zero App Conflicts</strong>: Apps run isolated in their own package container.</li>
+            <li><strong>On-Demand Mounting</strong>: Apps mount instantly when targeted users sign in.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: Security & Network Controls -->
+    <div class="slide slide-7">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">Security & Governance Controls</h2>
+          <p class="slide-subtitle">Enterprise Security Posture</p>
+        </div>
+        <span class="category-tag">Security</span>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title">🛡️ Forced Tunneling</div>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">UDR on Session Host subnet routes all internet egress (`0.0.0.0/0`) through Hub NVA / Firewall for deep packet inspection.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">🔒 Private Link Only</div>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Storage accounts for FSLogix profiles & App Attach packages completely block public IP ingress.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">🆔 Entra ID Identity</div>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Session Host VMs natively joined to Entra ID via `AADLoginForWindows` extension with RBAC logon controls.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: Terraform Code Structure -->
+    <div class="slide slide-8">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">Terraform Code Structure</h2>
+          <p class="slide-subtitle">Modular HCL Architecture</p>
+        </div>
+        <span class="category-tag">IaC Modules</span>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">📁 File Allocation</div>
+          <ul class="card-list">
+            <li>`network.tf` - VNet, Subnets, UDR, NSG, VNet Peering</li>
+            <li>`compute_gallery.tf` - Shared Image Gallery & Win11 Image Def</li>
+            <li>`storage_fslogix.tf` - FSLogix Storage, SMB Share, Private Endpoint</li>
+            <li>`storage_appattach.tf` - App Attach Storage & Private Endpoint</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">📁 Core & Host Modules</div>
+          <ul class="card-list">
+            <li>`avd_core.tf` - Workspace, Host Pool, DAG & Reg Token</li>
+            <li>`avd_session_hosts.tf` - Session Host VMs, NICs, Extensions</li>
+            <li>`outputs.tf` - Resource IDs, UNC Paths & IP outputs</li>
+            <li>`terraform.tfvars.example` - Environment configuration inputs</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: Execution & Verification -->
+    <div class="slide slide-9">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">Demo Execution & Verification</h2>
+          <p class="slide-subtitle">Commands & GitHub Repository</p>
+        </div>
+        <span class="category-tag">Live Demo</span>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">💻 Terraform Execution</div>
+<pre>git clone https://github.com/sam6shk/AVD_IaC_Spoke_Demo.git
+cd AVD_IaC_Spoke_Demo
+
+terraform init
+terraform validate
+terraform plan -out=tfplan
+terraform apply tfplan</pre>
+        </div>
+        <div class="card">
+          <div class="card-title">✅ Validation Result</div>
+          <p style="color: var(--accent-emerald); font-weight: 600; font-size: 1.1rem; margin-bottom: 1rem;">
+            Success! The configuration is valid.
+          </p>
+          <ul class="card-list">
+            <li>0 Errors & 0 Warnings.</li>
+            <li>Formatted with `terraform fmt`.</li>
+            <li>Committed & Pushed to GitHub `main` branch.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: Conclusion & Next Steps -->
+    <div class="slide slide-10">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">Summary & Next Steps</h2>
+          <p class="slide-subtitle">Operational Readiness</p>
+        </div>
+        <span class="category-tag">Summary</span>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">🌟 Key Achievements</div>
+          <ul class="card-list">
+            <li>Fully automated 2nd Spoke AVD Landing Zone deployment.</li>
+            <li>Clean separation of OS (SIG), Profiles (FSLogix), and Apps (App Attach).</li>
+            <li>Production-grade security & network topology.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">🚀 Production Rollout Checklist</div>
+          <ul class="card-list">
+            <li>Integrate into CI/CD Pipeline (Azure DevOps / GitHub Actions).</li>
+            <li>Configure AVD Scaling Plan (Autoscaling logic).</li>
+            <li>Upload line-of-business MSIX packages to App Attach share.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROLS BAR -->
+    <div class="controls-bar">
+      <button class="btn" id="prevBtn" onclick="changeSlide(-1)">❮ Previous</button>
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <span class="slide-counter" id="slideCounter">Slide 1 of 10</span>
+      <button class="btn" id="nextBtn" onclick="changeSlide(1)">Next ❯</button>
+    </div>
+
+  </div>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 10;
+
+    function updateSlide() {
+      // Hide all slides
+      document.querySelectorAll('.slide').forEach(slide => {
+        slide.classList.remove('active');
+      });
+
+      // Show current slide
+      const activeSlide = document.querySelector(`.slide-${currentSlide}`);
+      if (activeSlide) {
+        activeSlide.classList.add('active');
+      }
+
+      // Update counter and progress bar
+      document.getElementById('slideCounter').innerText = `Slide ${currentSlide} of ${totalSlides}`;
+      document.getElementById('progressBar').style.width = `${(currentSlide / totalSlides) * 100}%`;
+
+      // Button state
+      document.getElementById('prevBtn').disabled = (currentSlide === 1);
+      document.getElementById('nextBtn').disabled = (currentSlide === totalSlides);
+    }
+
+    function changeSlide(direction) {
+      currentSlide += direction;
+      if (currentSlide < 1) currentSlide = 1;
+      if (currentSlide > totalSlides) currentSlide = totalSlides;
+      updateSlide();
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        changeSlide(1);
+      } else if (e.key === 'ArrowLeft') {
+        changeSlide(-1);
+      }
+    });
+
+    // Initialize
+    updateSlide();
+  </script>
+</body>
+</html>
